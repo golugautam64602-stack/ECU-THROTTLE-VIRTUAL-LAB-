@@ -1,13 +1,123 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-	<!-- Add CSS at the head of HTML file -->
-    <link rel="stylesheet" href="./css/main.css">
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+  <title>ECU Virtual Lab</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-		<!-- Your code goes here-->
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">ECU</div>
+      <div>
+        <h1>ECU VIRTUAL LAB</h1>
+        <small>THROTTLE RESPONSE SIMULATOR</small>
+      </div>
+    </div> git push --set-upstream origin gautam
+    <span class="status" id="status">● READY</span>
+  </header>
 
-	<!-- Add JS at the bottom of HTML file --> 
-        <script src="./js/main.js"></script>
+  <main>
+    <section class="intro">
+      <div>
+        <p class="eyebrow">AUTOMOTIVE CONTROL SYSTEM</p>
+        <h2>Electronic Throttle Control</h2>
+        <p>Virtual ECU response and engine simulation</p>
+      </div>
+      <span class="tag">SIMULATION v1.0</span>
+    </section>
+
+    <section class="metrics">
+      <article class="card metric">
+        <span>ACCELERATOR PEDAL</span>
+        <strong id="pedalValue">0%</strong>
+      </article>
+      <article class="card metric">
+        <span>THROTTLE POSITION</span>
+        <strong id="throttleValue">0%</strong>
+      </article>
+      <article class="card metric">
+        <span>ENGINE SPEED</span>
+        <strong><span id="rpmValue">800</span> <small>RPM</small></strong>
+      </article>
+    </section>
+
+    <section class="grid">
+      <article class="card controls">
+        <h3>ECU CONTROL PANEL</h3>
+        <label for="pedal">Accelerator input</label>
+        <div class="range-value">
+          <span>Pedal position</span>
+          <strong id="pedalLabel">0%</strong>
+        </div>
+        <input id="pedal" type="range"
+               min="0" max="100" value="0">
+
+        <label for="delay">Actuator response time</label>
+        <div class="range-value">
+          <span>Response delay</span>
+          <strong id="delayLabel">0.50 s</strong>
+        </div>
+        <input id="delay" type="range"
+               min="0.1" max="2" step="0.1" value="0.5">
+
+        <label class="fault">
+          <input id="fault" type="checkbox">
+          Simulate pedal sensor fault
+        </label>
+
+        <div class="buttons">
+          <button id="start">▶ Start</button>
+          <button id="reset" class="secondary">↺ Reset</button>
+        </div>
+      </article>
+
+      <article class="card">
+        <h3>THROTTLE POSITION</h3>
+        <div class="gauge">
+          <svg viewBox="0 0 220 140">
+            <path d="M 25 115 A 85 85 0 0 1 195 115"
+                  fill="none" stroke="#273449"
+                  stroke-width="16" stroke-linecap="round"/>
+            <path id="gaugeArc"
+                  d="M 25 115 A 85 85 0 0 1 195 115"
+                  fill="none" stroke="#22d3ee"
+                  stroke-width="16" stroke-linecap="round"
+                  stroke-dasharray="267.04"
+                  stroke-dashoffset="267.04"/>
+            <text x="110" y="93" text-anchor="middle"
+                  fill="white" font-size="29"
+                  font-weight="bold" id="gaugeText">0%</text>
+            <text x="110" y="117" text-anchor="middle"
+                  fill="#94a3b8" font-size="10">THROTTLE</text>
+          </svg>
+        </div>
+        <div class="gauge-labels">
+          <span>0%</span><span>50%</span><span>100%</span>
+        </div>
+        <p class="note">Illustrative actuator model</p>
+      </article>
+    </section>
+
+    <section class="card chart-card">
+      <h3>THROTTLE RESPONSE GRAPH</h3>
+      <div class="legend">
+        <span class="blue">● Pedal input</span>
+        <span class="cyan">● Actual throttle</span>
+        <span class="green">● ECU target</span>
+      </div>
+      <canvas id="chart" height="230"></canvas>
+    </section>
+
+    <section class="card chart-card">
+      <h3>ENGINE RPM RESPONSE</h3>
+      <canvas id="rpmChart" height="160"></canvas>
+    </section>
+
+    <footer>ECU Virtual Lab · Educational simulation only</footer>
+  </main>
+  <script src="script.js"></script>
 </body>
 </html>
