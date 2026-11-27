@@ -1,13 +1,161 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-	<!-- Add CSS at the head of HTML file -->
-    <link rel="stylesheet" href="./css/main.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HIL Virtual Lab — ECU Electronic Throttle Control</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-		<!-- Your code goes here-->
+  <!-- Header -->
+  <header class="app-header">
+    <div class="header-left">
+      <h1>HIL Virtual Lab</h1>
+      <span class="subtitle">ECU Electronic Throttle Control Emulator</span>
+    </div>
+    <div class="header-right">
+      <div class="status-badge" id="ecuStatus">
+        <span class="dot"></span>
+        <span id="statusText">NORMAL</span>
+        <span class="sep">|</span>
+        <span id="dtcText">DTC: P0000</span>
+      </div>
+      <button class="btn btn-ghost" id="btnReset" title="Reset HIL">Reset HIL</button>
+    </div>
+  </header>
 
-	<!-- Add JS at the bottom of HTML file --> 
-        <script src="./js/main.js"></script>
+  <main class="layout">
+    <!-- LEFT: Control Console -->
+    <aside class="panel controls-panel">
+      <h2 class="panel-title">Control Console</h2>
+
+      <!-- Pedal -->
+      <div class="control-group">
+        <label for="pedalSlider">Accelerator Pedal <span id="pedalValue">0%</span></label>
+        <input type="range" id="pedalSlider" min="0" max="100" value="0" step="0.5" />
+      </div>
+
+      <!-- Step buttons -->
+      <div class="control-group">
+        <label>Step Commands</label>
+        <div class="btn-row">
+          <button class="btn btn-step" data-pct="0">Idle 0%</button>
+          <button class="btn btn-step active" data-pct="50">Half 50%</button>
+          <button class="btn btn-step" data-pct="100">WOT 100%</button>
+        </div>
+      </div>
+
+      <!-- PID Gains -->
+      <div class="control-group">
+        <label>PID Gains</label>
+        <div class="pid-grid">
+          <div class="pid-item">
+            <span>Kp</span>
+            <input type="number" id="kp" value="2.40" min="0" max="20" step="0.05" />
+          </div>
+          <div class="pid-item">
+            <span>Ki</span>
+            <input type="number" id="ki" value="0.85" min="0" max="10" step="0.05" />
+          </div>
+          <div class="pid-item">
+            <span>Kd</span>
+            <input type="number" id="kd" value="0.12" min="0" max="5" step="0.01" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Spring stiffness -->
+      <div class="control-group">
+        <label for="springSlider">Return Spring <span id="springValue">1.0×</span></label>
+        <input type="range" id="springSlider" min="0.5" max="2.5" value="1.0" step="0.1" />
+      </div>
+
+      <!-- Fault Injection -->
+      <div class="control-group fault-group">
+        <label class="fault-label">Fault Injection</label>
+        <div class="toggle-row">
+          <label class="toggle">
+            <input type="checkbox" id="faultTps2" />
+            <span class="toggle-slider"></span>
+            <span class="toggle-text">TPS2 Short-to-GND</span>
+          </label>
+          <label class="toggle">
+            <input type="checkbox" id="faultApp" />
+            <span class="toggle-slider"></span>
+            <span class="toggle-text">APP1/APP2 Mismatch</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Live Telemetry -->
+      <div class="telemetry">
+        <div class="tel-row"><span>Target θ</span><strong id="telTarget">0.0°</strong></div>
+        <div class="tel-row"><span>Actual θ</span><strong id="telActual">0.0°</strong></div>
+        <div class="tel-row"><span>Error</span><strong id="telError">0.00°</strong></div>
+        <div class="tel-row"><span>PWM</span><strong id="telPwm">0.0%</strong></div>
+        <div class="tel-row"><span>APP1 / APP2</span><strong id="telApp">0.75 / 0.38 V</strong></div>
+        <div class="tel-row"><span>TPS1 / TPS2</span><strong id="telTps">0.50 / 4.50 V</strong></div>
+      </div>
+    </aside>
+
+    <!-- CENTER: Throttle Animation + Scope -->
+    <section class="panel center-panel">
+      <div class="throttle-section">
+        <h2 class="panel-title">Throttle Body (2D)</h2>
+        <canvas id="throttleCanvas" width="420" height="280"></canvas>
+        <div class="throttle-info">
+          <span>θ = <strong id="angleLabel">0.0°</strong></span>
+          <span id="modeLabel" class="mode-normal">NORMAL</span>
+        </div>
+      </div>
+
+      <div class="scope-section">
+        <h2 class="panel-title">Real-Time Oscilloscope</h2>
+        <canvas id="scopeCanvas" width="620" height="220"></canvas>
+        <div class="scope-legend">
+          <span class="leg target">Target θ</span>
+          <span class="leg actual">Actual θ</span>
+          <span class="leg pwm">PWM %</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- RIGHT / BOTTOM: Experiment Log -->
+    <section class="panel log-panel">
+      <div class="log-header">
+        <h2 class="panel-title">Experiment Output Log</h2>
+        <div class="log-actions">
+          <button class="btn btn-primary" id="btnAddReading">+ Add Reading</button>
+          <button class="btn btn-ghost" id="btnExport">Export CSV</button>
+          <button class="btn btn-ghost" id="btnClearLog">Clear</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table id="logTable">
+          <thead>
+            <tr>
+              <th>Run</th>
+              <th>Test Condition</th>
+              <th>Pedal %</th>
+              <th>Target °</th>
+              <th>Actual °</th>
+              <th>Error °</th>
+              <th>DTC</th>
+              <th>ECU Mode</th>
+            </tr>
+          </thead>
+          <tbody id="logBody"></tbody>
+        </table>
+      </div>
+      <p class="log-note">Δt = 0.016 s  ·  Default PID: Kp=2.4, Ki=0.85, Kd=0.12  ·  Click “Add Reading” after steady-state</p>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    HIL Emulation of ECU Throttle Responses — Mini Project Lab · Rajkiya Engineering College, Banda
+  </footer>
+
+  <script src="script.js"></script>
 </body>
 </html>
+
