@@ -1,1 +1,457 @@
-/* You CSS goes in here */
+/* ===== HIL Virtual Lab — Dark Engineering Theme ===== */
+:root {
+  --bg: #0f1419;
+  --panel: #1a2332;
+  --panel-border: #2d3a4f;
+  --text: #e2e8f0;
+  --text-muted: #94a3b8;
+  --accent: #38bdf8;
+  --accent-dim: #0ea5e9;
+  --green: #4ade80;
+  --orange: #fb923c;
+  --red: #f87171;
+  --danger: #dc2626;
+  --radius: 10px;
+  --font: "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 24px;
+  background: #0a0e14;
+  border-bottom: 1px solid var(--panel-border);
+}
+
+.header-left h1 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.02em;
+}
+
+.subtitle {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-left: 10px;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.status-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #132018;
+  border: 1px solid #22543d;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.status-badge .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 6px var(--green);
+}
+
+.status-badge.fault {
+  background: #1c1212;
+  border-color: #7f1d1d;
+}
+
+.status-badge.fault .dot {
+  background: var(--red);
+  box-shadow: 0 0 6px var(--red);
+}
+
+.status-badge .sep {
+  color: var(--text-muted);
+  opacity: 0.5;
+}
+
+/* Layout */
+.layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  grid-template-rows: 1fr auto;
+  gap: 14px;
+  padding: 14px;
+  flex: 1;
+  max-width: 1440px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius);
+  padding: 16px;
+}
+
+.panel-title {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+  margin-bottom: 14px;
+  font-weight: 600;
+}
+
+/* Controls Panel */
+.controls-panel {
+  grid-row: 1 / 3;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-y: auto;
+}
+
+.control-group label {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+
+.control-group label span {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+input[type="range"] {
+  width: 100%;
+  height: 6px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: #2d3a4f;
+  border-radius: 3px;
+  outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  box-shadow: 0 0 8px rgba(56, 189, 248, 0.4);
+}
+
+.btn-row {
+  display: flex;
+  gap: 6px;
+}
+
+.btn {
+  border: none;
+  border-radius: 6px;
+  padding: 7px 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: inherit;
+}
+
+.btn-step {
+  flex: 1;
+  background: #2d3a4f;
+  color: var(--text);
+}
+
+.btn-step:hover { background: #3d4f6a; }
+.btn-step.active { background: var(--accent-dim); color: #0f172a; }
+
+.btn-primary {
+  background: var(--accent-dim);
+  color: #0f172a;
+}
+.btn-primary:hover { background: var(--accent); }
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--panel-border);
+}
+.btn-ghost:hover {
+  color: var(--text);
+  border-color: var(--text-muted);
+}
+
+/* PID Grid */
+.pid-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.pid-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.pid-item span {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.pid-item input {
+  width: 100%;
+  background: #0f1419;
+  border: 1px solid var(--panel-border);
+  border-radius: 6px;
+  color: var(--green);
+  padding: 6px 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  font-family: "Consolas", "Courier New", monospace;
+}
+
+.pid-item input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+/* Fault Toggles */
+.fault-group .fault-label {
+  color: var(--red) !important;
+}
+
+.toggle-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 0.82rem;
+  color: var(--text);
+}
+
+.toggle input {
+  display: none;
+}
+
+.toggle-slider {
+  width: 36px;
+  height: 20px;
+  background: #2d3a4f;
+  border-radius: 10px;
+  position: relative;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+
+.toggle-slider::after {
+  content: "";
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  background: #94a3b8;
+  border-radius: 50%;
+  top: 3px;
+  left: 3px;
+  transition: all 0.2s;
+}
+
+.toggle input:checked + .toggle-slider {
+  background: var(--danger);
+}
+
+.toggle input:checked + .toggle-slider::after {
+  left: 19px;
+  background: white;
+}
+
+/* Telemetry */
+.telemetry {
+  margin-top: auto;
+  background: #0f1419;
+  border-radius: 8px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border: 1px solid var(--panel-border);
+}
+
+.tel-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+}
+
+.tel-row span { color: var(--text-muted); }
+.tel-row strong {
+  font-family: "Consolas", "Courier New", monospace;
+  color: var(--text);
+}
+
+/* Center Panel */
+.center-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.throttle-section,
+.scope-section {
+  flex: 1;
+}
+
+#throttleCanvas,
+#scopeCanvas {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  background: #0a0e14;
+  display: block;
+}
+
+.throttle-info {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  font-size: 0.9rem;
+}
+
+.mode-normal { color: var(--green); font-weight: 700; }
+.mode-limp { color: var(--red); font-weight: 700; }
+
+.scope-legend {
+  display: flex;
+  gap: 18px;
+  margin-top: 8px;
+  font-size: 0.8rem;
+}
+
+.leg::before {
+  content: "";
+  display: inline-block;
+  width: 14px;
+  height: 3px;
+  margin-right: 6px;
+  vertical-align: middle;
+  border-radius: 2px;
+}
+
+.leg.target::before { background: var(--accent); }
+.leg.actual::before { background: var(--green); }
+.leg.pwm::before { background: var(--orange); }
+
+/* Log Panel */
+.log-panel {
+  grid-column: 2;
+}
+
+.log-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.log-header .panel-title { margin-bottom: 0; }
+
+.log-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.table-wrap {
+  overflow-x: auto;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+#logTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+}
+
+#logTable th {
+  background: #0f1419;
+  color: var(--text-muted);
+  text-align: left;
+  padding: 8px 10px;
+  position: sticky;
+  top: 0;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+}
+
+#logTable td {
+  padding: 7px 10px;
+  border-bottom: 1px solid #243044;
+  font-family: "Consolas", "Courier New", monospace;
+}
+
+#logTable tbody tr:hover {
+  background: #243044;
+}
+
+#logTable .mode-normal { color: var(--green); }
+#logTable .mode-limp { color: var(--red); }
+#logTable .dtc-ok { color: var(--green); }
+#logTable .dtc-fault { color: var(--red); }
+
+.log-note {
+  margin-top: 8px;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+/* Footer */
+.app-footer {
+  text-align: center;
+  padding: 10px;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  border-top: 1px solid var(--panel-border);
+  background: #0a0e14;
+}
+
+/* Responsive */
+@media (max-width: 980px) {
+  .layout {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+  }
+  .controls-panel { grid-row: auto; }
+  .log-panel { grid-column: 1; }
+  }
